@@ -28,18 +28,29 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS para el frontend.
+# CORS para el frontend. Orígenes locales + el dominio de producción en Fly.
+# Se pueden añadir más mediante la variable de entorno CORS_ORIGINS (separados
+# por comas), igual que en el proyecto de bancos.
+_default_origins = [
+    "http://localhost:5173",
+    "http://localhost:5180",
+    "http://localhost:3000",
+    "https://comisiones-loangia-web.fly.dev",
+]
+_env_origins = [o.strip() for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:5180",
-        "http://localhost:3000",
-    ],
+    allow_origins=_default_origins + _env_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/health")
+def health() -> Dict[str, str]:
+    """Health check para el proveedor de hosting (Fly)."""
+    return {"status": "ok"}
 
 # Directorio temporal para los Excel generados.
 TMP_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tmp")

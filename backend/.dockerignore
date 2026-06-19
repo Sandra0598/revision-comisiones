@@ -1,0 +1,10 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+tmp/
+tests/
+test_flow.py
+.pytest_cache/
+*.xlsx
+*.xls

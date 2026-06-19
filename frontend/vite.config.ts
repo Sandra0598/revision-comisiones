@@ -12,5 +12,17 @@ export default defineConfig({
     port: 5180,
     strictPort: true,
     host: true,
+    // Permite servir la app a través de un túnel (cloudflare/ngrok) sin que
+    // Vite bloquee el dominio externo.
+    allowedHosts: true,
+    // Proxy interno: las llamadas a /api se reenvían al backend FastAPI.
+    // Así un único enlace (el del túnel) sirve web + backend, sin que el
+    // navegador del visitante tenga que alcanzar su propio localhost:8000.
+    proxy: {
+      "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+    },
   },
 });

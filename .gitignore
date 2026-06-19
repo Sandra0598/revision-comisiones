@@ -19,8 +19,11 @@ dist-ssr/
 *.local
 
 # === Entorno ===
+# Se ignoran los .env locales/secretos, pero NO .env.production (necesario
+# para el build de Fly: contiene la URL pública del backend, no secretos).
 .env
-.env.*
+.env.local
+.env.*.local
 .DS_Store
 
 # === Editores ===
