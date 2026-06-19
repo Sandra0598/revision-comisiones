@@ -1,0 +1,28 @@
+# === Datos confidenciales (NO subir a un repo público) ===
+*.xlsx
+*.xls
+backend/tmp/
+backend/app/data/*.xlsx
+
+# === Python / backend ===
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# === Node / frontend ===
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# === Entorno ===
+.env
+.env.*
+.DS_Store
+
+# === Editores ===
+.vscode/
+.idea/
