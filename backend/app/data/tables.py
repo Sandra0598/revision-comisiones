@@ -119,12 +119,12 @@ def lookup_rappel_individual(
 # ---------------------------------------------------------------------------
 # Super concurso en pareja Eva + Sara
 # ---------------------------------------------------------------------------
-# Umbrales "mas de X" sobre ventas_validas_pareja (ya restadas las 50).
-# Importe es POR PERSONA.
+# Umbrales "X o mas" (inclusivos) sobre ventas_validas_pareja (ya restadas las
+# 50). Importe es POR PERSONA. Ej.: 63 ventas validas -> Senior.
 SUPER_CONCURSO_PAREJA: List[Tuple[str, Dict[str, float]]] = [
-    ("Senior", {"min_exclusivo": 63, "1": 425, "2": 500, "3": 575, "siguientes": 575}),
-    ("Junior", {"min_exclusivo": 55, "1": 150, "2": 250, "3": 350, "siguientes": 350}),
-    ("Baby",   {"min_exclusivo": 46, "1": 75,  "2": 125, "3": 175, "siguientes": 175}),
+    ("Senior", {"min_inclusivo": 63, "1": 425, "2": 500, "3": 575, "siguientes": 575}),
+    ("Junior", {"min_inclusivo": 55, "1": 150, "2": 250, "3": 350, "siguientes": 350}),
+    ("Baby",   {"min_inclusivo": 46, "1": 75,  "2": 125, "3": 175, "siguientes": 175}),
 ]
 
 # Orden de niveles de menor a mayor para detectar subidas/bajadas.
@@ -132,9 +132,13 @@ NIVELES_PAREJA_ORDEN = ["Baby", "Junior", "Senior"]
 
 
 def determinar_nivel_pareja(ventas_validas_pareja: int) -> Optional[str]:
-    """Devuelve el nivel de pareja segun prioridad Senior > Junior > Baby."""
+    """Devuelve el nivel de pareja segun prioridad Senior > Junior > Baby.
+
+    Umbrales inclusivos: alcanzar exactamente el minimo ya da ese nivel
+    (p.ej. 63 -> Senior).
+    """
     for nombre, datos in SUPER_CONCURSO_PAREJA:
-        if ventas_validas_pareja > datos["min_exclusivo"]:
+        if ventas_validas_pareja >= datos["min_inclusivo"]:
             return nombre
     return None
 
