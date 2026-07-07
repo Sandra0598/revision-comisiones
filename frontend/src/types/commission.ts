@@ -17,6 +17,7 @@ export interface Config {
   minimo_ventas_nuevas_499: number;
   ventas_obligatorias_individual: number;
   ventas_obligatorias_pareja: number;
+  mes_consecutivo_individual_por_defecto?: number;
   objetivo_pizarra_1: number;
   objetivo_pizarra_2: number;
   referencia_frias_100: number;

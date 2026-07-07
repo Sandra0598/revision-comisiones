@@ -321,13 +321,17 @@ def _puntos_en_incremento(acumulado: int, incremento: int, bloque: int) -> int:
 
 
 def _mes_consecutivo_individual(nombre: str, config: Dict[str, Any]) -> Any:
-    """Obtiene el mes consecutivo individual informado para la comercial."""
+    """Obtiene el mes consecutivo individual de la comercial.
+
+    Prioriza el valor informado por comercial; si no hay, usa el mes consecutivo
+    por defecto de la configuracion; si tampoco hay, devuelve None (se asume 1).
+    """
     mapa = config.get("meses_consecutivos_individual", {}) or {}
     key = normalize_text(nombre)
     for k, v in mapa.items():
-        if normalize_text(k) == key:
+        if normalize_text(k) == key and v is not None and str(v).strip() != "":
             return v
-    return None
+    return config.get("mes_consecutivo_individual_por_defecto")
 
 
 def aplicar_premios(

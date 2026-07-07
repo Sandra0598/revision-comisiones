@@ -25,6 +25,10 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     # Ventas obligatorias antes de consultar tablas de rappel.
     "ventas_obligatorias_individual": 25,
     "ventas_obligatorias_pareja": 50,
+    # Mes consecutivo que se asume para el rappel individual cuando no se informa
+    # uno concreto por comercial. A partir del 3.er mes se desbloquean los
+    # niveles altos (1.0, 2.0, ...). Poner None para asumir 1er mes.
+    "mes_consecutivo_individual_por_defecto": 3,
     # Objetivos de las pizarras.
     "objetivo_pizarra_1": 13,
     "objetivo_pizarra_2": 12,

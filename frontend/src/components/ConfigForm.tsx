@@ -20,6 +20,13 @@ const NUMBER_FIELDS: NumberFieldDef[] = [
   { key: "minimo_ventas_nuevas_499", label: "Mínimo ventas nuevas 499+", step: 1, min: 0 },
   { key: "ventas_obligatorias_individual", label: "Ventas obligatorias individual", step: 1, min: 0 },
   { key: "ventas_obligatorias_pareja", label: "Ventas obligatorias pareja", step: 1, min: 0 },
+  {
+    key: "mes_consecutivo_individual_por_defecto",
+    label: "Mes consecutivo por defecto",
+    step: 1,
+    min: 1,
+    help: "Se aplica a todas para el rappel individual salvo las que informes abajo. Desde el 3.º se desbloquean los niveles altos.",
+  },
   { key: "objetivo_pizarra_1", label: "Objetivo Pizarra 1", step: 1, min: 0 },
   { key: "objetivo_pizarra_2", label: "Objetivo Pizarra 2", step: 1, min: 0 },
   { key: "referencia_frias_100", label: "Referencia frías 100%", step: 1, min: 0 },
@@ -160,6 +167,9 @@ export default function ConfigForm({ config, onChange, loading }: ConfigFormProp
                   value={Number(config[f.key] ?? 0)}
                   onChange={(e) => setNumber(f.key, e.target.value)}
                 />
+                {f.help && (
+                  <p className="mt-1 text-xs text-slate-500">{f.help}</p>
+                )}
               </div>
             ))}
           </div>

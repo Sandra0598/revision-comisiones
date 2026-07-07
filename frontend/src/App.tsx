@@ -21,6 +21,7 @@ const FALLBACK_CONFIG: Config = {
   minimo_ventas_nuevas_499: 6,
   ventas_obligatorias_individual: 25,
   ventas_obligatorias_pareja: 50,
+  mes_consecutivo_individual_por_defecto: 3,
   objetivo_pizarra_1: 13,
   objetivo_pizarra_2: 12,
   referencia_frias_100: 13,

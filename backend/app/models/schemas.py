@@ -23,6 +23,7 @@ class CommissionConfig(BaseModel):
     minimo_ventas_nuevas_499: int = 6
     ventas_obligatorias_individual: int = 25
     ventas_obligatorias_pareja: int = 50
+    mes_consecutivo_individual_por_defecto: Optional[Any] = 3
     objetivo_pizarra_1: int = 13
     objetivo_pizarra_2: int = 12
     referencia_frias_100: int = 13
