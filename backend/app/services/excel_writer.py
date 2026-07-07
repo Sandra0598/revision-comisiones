@@ -23,6 +23,11 @@ HEADER_FILL = PatternFill(start_color="1F4E78", end_color="1F4E78", fill_type="s
 HEADER_FONT = Font(bold=True, color="FFFFFF")
 TITLE_FONT = Font(bold=True, size=13, color="1F4E78")
 LABEL_FONT = Font(bold=True)
+# Estilos para destacar el TOTAL y que se localice de un vistazo.
+TOTAL_FONT = Font(bold=True, size=16, color="1F4E78")
+TOTAL_LABEL_FONT = Font(bold=True, size=13, color="1F4E78")
+TOTAL_FILL = PatternFill(start_color="FFF2CC", end_color="FFF2CC", fill_type="solid")
+TOTAL_HEADER_FILL = PatternFill(start_color="ED7D31", end_color="ED7D31", fill_type="solid")
 THIN_BORDER = Border(
     left=Side(style="thin", color="D9D9D9"),
     right=Side(style="thin", color="D9D9D9"),
@@ -121,21 +126,24 @@ def _write_config_sheet(ws: Worksheet, config: Dict[str, Any]) -> None:
 # Pestana Resumen general
 # ---------------------------------------------------------------------------
 
+# "Total esperado" va en 2.ª posicion (justo tras el nombre) para localizarlo
+# de un vistazo y se resalta con color propio.
 RESUMEN_HEADERS = [
-    "Comercial", "Ventas computables totales", "Ventas Pizarra 1",
+    "Comercial", "Total esperado", "Ventas computables totales", "Ventas Pizarra 1",
     "Ventas Pizarra 2 reales", "ADW computables", "Puntos ADW Pizarra 2",
     "RNS computables", "Puntos RNS Pizarra 2", "Pizarra 2 ajustada",
     "% concurso", "Concurso €", "Ventas nuevas 499+", "Premio ventas nuevas 499+",
     "Ventas para rappel bonus", "Rappel bonus general",
     "Ventas para rappel individual", "Nivel rappel individual",
     "Mes consecutivo individual", "Rappel individual", "Super concurso pareja",
-    "Total esperado", "Comision declarada", "Diferencia", "Estado", "Alertas",
+    "Comision declarada", "Diferencia", "Estado", "Alertas",
 ]
 
 
 def _resumen_row(res: ComercialResult) -> List[Any]:
     return [
         res.comercial,
+        res.total_final,
         res.ventas_computables_totales,
         res.pizarra_1_final,
         res.pizarra_2_real,
@@ -155,7 +163,6 @@ def _resumen_row(res: ComercialResult) -> List[Any]:
         res.mes_consecutivo_individual if res.mes_consecutivo_individual is not None else "",
         res.rappel_individual,
         res.super_concurso_pareja,
-        res.total_final,
         res.comision_declarada if res.comision_declarada is not None else "",
         res.diferencia if res.diferencia is not None else "",
         res.estado,
@@ -167,9 +174,18 @@ def _write_resumen_sheet(ws: Worksheet, resultados: List[ComercialResult]) -> No
     ws.cell(row=1, column=1, value="Resumen general de comisiones").font = TITLE_FONT
     rows = [_resumen_row(r) for r in resultados]
     # Columnas (1-indexadas) con formato moneda y porcentaje.
-    money_cols = [11, 13, 15, 19, 20, 21, 22, 23]
-    pct_cols = [10]
+    total_col = RESUMEN_HEADERS.index("Total esperado") + 1  # = 2
+    money_cols = [total_col, 12, 14, 16, 20, 21, 22, 23]
+    pct_cols = [11]
     last = _write_table(ws, RESUMEN_HEADERS, rows, start_row=3, money_cols=money_cols, pct_cols=pct_cols)
+
+    # Resaltar la columna del Total: cabecera naranja y celdas en negrita/oro.
+    hdr = ws.cell(row=3, column=total_col)
+    hdr.fill = TOTAL_HEADER_FILL
+    for r in range(4, last + 1):
+        cell = ws.cell(row=r, column=total_col)
+        cell.font = LABEL_FONT
+        cell.fill = TOTAL_FILL
 
     # Resaltar estados.
     estado_col = RESUMEN_HEADERS.index("Estado") + 1
@@ -208,8 +224,29 @@ def _fmt_fecha(value: Any) -> Any:
 
 
 def _write_resumen_bloque(ws: Worksheet, res: ComercialResult, start_row: int) -> int:
-    """Escribe el bloque-resumen de magnitudes de la comercial."""
+    """Escribe el bloque-resumen de magnitudes de la comercial.
+
+    Arriba del todo pone un banner grande con el TOTAL para localizarlo de un
+    vistazo; debajo, el resto de magnitudes.
+    """
     ws.cell(row=start_row, column=1, value=f"Resumen {res.comercial}").font = TITLE_FONT
+
+    # Banner destacado del TOTAL, justo bajo el titulo.
+    banner_row = start_row + 1
+    lc = ws.cell(row=banner_row, column=1, value="TOTAL")
+    lc.font = TOTAL_LABEL_FONT
+    lc.fill = TOTAL_FILL
+    lc.alignment = Alignment(vertical="center")
+    lc.border = THIN_BORDER
+    vc = ws.cell(row=banner_row, column=2, value=res.total_final)
+    vc.font = TOTAL_FONT
+    vc.fill = TOTAL_FILL
+    vc.alignment = Alignment(vertical="center")
+    vc.border = THIN_BORDER
+    if isinstance(res.total_final, (int, float)):
+        vc.number_format = MONEY_FMT
+    ws.row_dimensions[banner_row].height = 24
+
     pares = [
         ("Ventas computables totales", res.ventas_computables_totales, False),
         ("Pizarra 1 final", res.pizarra_1_final, False),
@@ -230,7 +267,7 @@ def _write_resumen_bloque(ws: Worksheet, res: ComercialResult, start_row: int) -
         ("Upselling equivalente fria", res.upselling_equivalente_fria, False),
         ("Ventas equivalentes totales", res.ventas_equivalentes_totales, False),
     ]
-    r = start_row
+    r = banner_row
     for label, value, fmt in pares:
         r += 1
         lc = ws.cell(row=r, column=1, value=label)
