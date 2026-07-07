@@ -29,6 +29,7 @@ const FALLBACK_CONFIG: Config = {
   equivalencia_upselling_a_fria: 0.5,
   adw_bloque_para_punto: 3,
   rns_bloque_para_punto: 4,
+  umbral_venta_doble: 759,
   importes_venta_doble: [759, 859],
   importe_venta_doble: 859,
   activar_venta_doble_859: true,

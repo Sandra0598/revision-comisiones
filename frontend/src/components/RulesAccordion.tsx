@@ -82,8 +82,8 @@ export default function RulesAccordion() {
           </Rule>
 
           <Rule title="Venta doble">
-            Las ventas de <strong>759 €</strong> y <strong>859 €</strong> cuentan
-            como <strong>2 ventas computables</strong>.
+            Toda venta con importe <strong>igual o superior a 759 €</strong>{" "}
+            cuenta como <strong>2 ventas computables</strong>.
           </Rule>
 
           <Rule title="Pizarra 1">

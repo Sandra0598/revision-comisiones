@@ -34,7 +34,13 @@ const NUMBER_FIELDS: NumberFieldDef[] = [
   { key: "equivalencia_upselling_a_fria", label: "Equivalencia upselling → fría", step: 0.1, min: 0 },
   { key: "adw_bloque_para_punto", label: "ADW: bloque para 1 punto", step: 1, min: 1 },
   { key: "rns_bloque_para_punto", label: "RNS: bloque para 1 punto", step: 1, min: 1 },
-  { key: "importe_venta_doble", label: "Importe venta doble (€)", step: 1, min: 0 },
+  {
+    key: "umbral_venta_doble",
+    label: "Umbral venta doble (€)",
+    step: 1,
+    min: 0,
+    help: "Toda venta con importe igual o superior a este valor cuenta como 2.",
+  },
 ];
 
 const MESES = [

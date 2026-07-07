@@ -39,8 +39,9 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     # Hitos de puntos para Pizarra 2.
     "adw_bloque_para_punto": 3,
     "rns_bloque_para_punto": 4,
-    # Venta doble: importes que cuentan como 2 ventas (759 € y 859 €).
-    "importes_venta_doble": [759.0, 859.0],
+    # Venta doble: toda venta con importe >= umbral cuenta como 2 ventas.
+    "umbral_venta_doble": 759.0,
+    "importes_venta_doble": [759.0, 859.0],  # legado (si no hay umbral)
     "importe_venta_doble": 859.0,  # legado (retrocompatibilidad)
     "activar_venta_doble_859": True,
     # Premios adicionales solo si se llega al 100% del concurso.

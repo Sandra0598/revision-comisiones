@@ -42,11 +42,22 @@ def _importes_venta_doble(config: Dict[str, Any]) -> list[float]:
 
 
 def es_venta_doble(importe: float | None, config: Dict[str, Any]) -> bool:
-    """Indica si una venta cuenta como doble (importe entre los configurados)."""
+    """Indica si una venta cuenta como doble.
+
+    Regla actual: toda venta cuyo importe sea >= ``umbral_venta_doble`` (759 €
+    por defecto) cuenta doble. Si no hay umbral configurado, cae en la lista de
+    importes exactos por retrocompatibilidad.
+    """
     if not config.get("activar_venta_doble_859", True):
         return False
     if importe is None:
         return False
+    umbral = config.get("umbral_venta_doble")
+    if umbral is not None:
+        try:
+            return importe >= float(umbral)
+        except (TypeError, ValueError):
+            pass
     return any(amounts_equal(importe, d) for d in _importes_venta_doble(config))
 
 

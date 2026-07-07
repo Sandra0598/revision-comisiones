@@ -31,6 +31,7 @@ class CommissionConfig(BaseModel):
     equivalencia_upselling_a_fria: float = 0.5
     adw_bloque_para_punto: int = 3
     rns_bloque_para_punto: int = 4
+    umbral_venta_doble: Optional[float] = 759.0
     importes_venta_doble: List[float] = Field(default_factory=lambda: [759.0, 859.0])
     importe_venta_doble: float = 859.0
     activar_venta_doble_859: bool = True

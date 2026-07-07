@@ -25,6 +25,7 @@ export interface Config {
   equivalencia_upselling_a_fria: number;
   adw_bloque_para_punto: number;
   rns_bloque_para_punto: number;
+  umbral_venta_doble?: number;
   importes_venta_doble?: number[];
   importe_venta_doble: number;
   activar_venta_doble_859: boolean;
