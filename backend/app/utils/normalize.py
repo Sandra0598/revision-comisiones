@@ -166,6 +166,12 @@ def detect_movimiento_precio(pizarra_raw: object) -> Optional[str]:
         return "igual"
     if "bajad" in p or "baja de" in p or "baja precio" in p:
         return "bajada"
+    # Renovaciones/consultora etiquetadas como pizarra 3 (p.ej. '3RN.r',
+    # '3Venta Consultora'): se revisan pero NO computan, igual que 'Igual de
+    # precio'. Antes se descartaban en silencio por no reconocerse.
+    compact = p.replace(" ", "")
+    if compact.startswith("3"):
+        return "igual"
     return None
 
 

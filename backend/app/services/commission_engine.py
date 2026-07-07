@@ -115,25 +115,29 @@ def calcular_porcentaje_concurso(
 ) -> float:
     """Calcula el porcentaje de concurso mensual individual (0..100).
 
-    El objetivo es el TOTAL de ventas: Pizarra 1 + Pizarra 2 ajustada debe
-    llegar al minimo (objetivo_pizarra_1 + objetivo_pizarra_2 = 25). Mezclar
-    categorias (frias de Pizarra 1 y upselling de Pizarra 2) hacia ese total ya
-    sirve de compensacion. Ejemplo: Virginia 8 + 17 = 25 -> 100%.
+    Igual que el CRM: es la MEDIA de las dos pizarras respecto a su objetivo
+    (Pizarra 1 sobre 13, Pizarra 2 ajustada sobre 12). No hay tope por pizarra,
+    de modo que superar una compensa a la otra; el resultado final si se topa al
+    100%.
 
-    El resultado se redondea al entero mas cercano (>= 0,5 sube, < 0,5 baja).
-    Un valor proximo (p.ej. 99,6%) se redondea a 99% para no fabricar un 100%
-    que no se ha alcanzado realmente.
+        % = (P1/obj1 + P2/obj2) / 2   (maximo 100%)
+
+    Ejemplos reales (CRM): Estela (4,11) -> 61%; Susana (7,17) -> 98%;
+    Virginia (10,29) -> 159% -> 100%.
+
+    El resultado se redondea al entero mas cercano (>= 0,5 sube). Un valor
+    proximo (p.ej. 99,6%) se redondea a 99% para no fabricar un 100% que no se ha
+    alcanzado realmente.
     """
-    obj1 = max(0, int(config.get("objetivo_pizarra_1", 13)))
-    obj2 = max(0, int(config.get("objetivo_pizarra_2", 12)))
-    objetivo_total = max(1, obj1 + obj2)
-    total = pizarra_1_final + pizarra_2_ajustada
-    # Alcanzado el minimo de ventas -> 100%.
-    if total >= objetivo_total:
+    obj1 = max(1, int(config.get("objetivo_pizarra_1", 13)))
+    obj2 = max(1, int(config.get("objetivo_pizarra_2", 12)))
+    ratio_pct = (pizarra_1_final / obj1 + pizarra_2_ajustada / obj2) / 2 * 100.0
+    # Media >= 100% -> 100%.
+    if ratio_pct >= 100.0:
         return 100.0
     # Redondeo "round half up" al entero.
-    entero = math.floor(total / objetivo_total * 100.0 + 0.5)
-    # No se ha alcanzado el minimo: nunca mostrar 100%.
+    entero = math.floor(ratio_pct + 0.5)
+    # No se ha alcanzado el 100% real: nunca mostrarlo.
     if entero >= 100:
         entero = 99
     return float(entero)

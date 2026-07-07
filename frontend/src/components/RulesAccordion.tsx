@@ -82,8 +82,8 @@ export default function RulesAccordion() {
           </Rule>
 
           <Rule title="Venta doble">
-            Las ventas de <strong>859 €</strong> cuentan como{" "}
-            <strong>2 ventas computables</strong>.
+            Las ventas de <strong>759 €</strong> y <strong>859 €</strong> cuentan
+            como <strong>2 ventas computables</strong>.
           </Rule>
 
           <Rule title="Pizarra 1">
@@ -93,6 +93,24 @@ export default function RulesAccordion() {
           <Rule title="Pizarra 2">
             Pizarra 2 necesita <strong>12 ventas</strong>. A sus ventas reales se
             suman los puntos generados por ADW y subidas RNS.
+          </Rule>
+
+          <Rule title="% de concurso mensual">
+            Es la <strong>media de las dos pizarras</strong> respecto a su
+            objetivo (Pizarra 1 sobre 13, Pizarra 2 sobre 12). No hay tope por
+            pizarra, así que superar una compensa a la otra; el resultado final
+            se topa al <strong>100%</strong>.
+            <div className="mt-2 rounded-md bg-white px-3 py-2 font-mono text-xs text-slate-600 ring-1 ring-slate-200">
+              % = (Pizarra 1 / 13 + Pizarra 2 / 12) / 2 &nbsp;(máx. 100%)
+            </div>
+            <Example
+              rows={[
+                "Estela (4, 11) = 61%",
+                "Susana (7, 17) = 98%",
+                "Virginia (10, 29) = 100%",
+              ]}
+              total="Coincide con el CRM"
+            />
           </Rule>
 
           <Rule title="Regla ADW (hitos de 3)">

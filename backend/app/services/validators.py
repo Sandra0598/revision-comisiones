@@ -19,24 +19,40 @@ from app.utils.normalize import (
 )
 
 
-def valor_computable(importe: float | None, config: Dict[str, Any]) -> int:
-    """Valor computable de una venta: 2 si es venta doble 859, 1 en otro caso."""
-    if not config.get("activar_venta_doble_859", True):
-        return 1
-    if importe is None:
-        return 1
-    if amounts_equal(importe, float(config.get("importe_venta_doble", 859.0))):
-        return 2
-    return 1
+def _importes_venta_doble(config: Dict[str, Any]) -> list[float]:
+    """Lista de importes que cuentan como venta doble (p.ej. 759 y 859).
+
+    Prioriza la clave ``importes_venta_doble`` (lista). Si no existe, cae en la
+    clave antigua ``importe_venta_doble`` (un solo valor) por retrocompatibilidad.
+    """
+    lista = config.get("importes_venta_doble")
+    if lista:
+        out: list[float] = []
+        for v in lista:
+            try:
+                out.append(float(v))
+            except (TypeError, ValueError):
+                continue
+        if out:
+            return out
+    try:
+        return [float(config.get("importe_venta_doble", 859.0))]
+    except (TypeError, ValueError):
+        return [859.0]
 
 
 def es_venta_doble(importe: float | None, config: Dict[str, Any]) -> bool:
-    """Indica si una venta es la venta doble de 859."""
+    """Indica si una venta cuenta como doble (importe entre los configurados)."""
     if not config.get("activar_venta_doble_859", True):
         return False
     if importe is None:
         return False
-    return amounts_equal(importe, float(config.get("importe_venta_doble", 859.0)))
+    return any(amounts_equal(importe, d) for d in _importes_venta_doble(config))
+
+
+def valor_computable(importe: float | None, config: Dict[str, Any]) -> int:
+    """Valor computable de una venta: 2 si es venta doble, 1 en otro caso."""
+    return 2 if es_venta_doble(importe, config) else 1
 
 
 def adw_punto_fila(numero_acumulado_adw: int, bloque: int = 3) -> int:
